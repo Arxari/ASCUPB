@@ -4,7 +4,7 @@
 pkgname=xdg-desktop-portal-gnome
 pkgver=47.1
 pkgrel=2
-pkgdesc="Backend implementation for xdg-desktop-portal for the GNOME desktop environment"
+pkgdesc="GNOME desktop portal modified to work on Hyprland"
 url="https://gitlab.gnome.org/GNOME/xdg-desktop-portal-gnome"
 arch=(x86_64)
 license=(LGPL-2.1-or-later)
