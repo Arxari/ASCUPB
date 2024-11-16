@@ -9,5 +9,9 @@ Then in your terminal run:
 ```sh
 paru -Sy --pkgbuilds
 ```
-
 And you're good to go!
+
+To update the packages run:
+```sh
+paru -Sy --pkgbuilds
+```
