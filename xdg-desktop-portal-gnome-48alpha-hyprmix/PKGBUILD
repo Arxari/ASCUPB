@@ -1,0 +1,67 @@
+# Maintainer: Fabian Bornschein <fabiscafe@archlinux.org>
+# Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+# Modified for Hyprland by @Arxari
+pkgname=xdg-desktop-portal-gnome
+pkgver=48alpha
+pkgrel=1
+pkgdesc="GNOME desktop portal modified to work on Hyprland"
+url="https://gitlab.gnome.org/GNOME/xdg-desktop-portal-gnome"
+arch=(x86_64)
+license=(LGPL-2.1-or-later)
+depends=(
+  cairo
+  dconf
+  fontconfig
+  gcc-libs
+  gdk-pixbuf2
+  glib2
+  glibc
+  gnome-desktop-4
+  graphene
+  gtk4
+  libadwaita
+  libx11
+  nautilus
+  wayland
+  xdg-desktop-portal
+  'xdg-desktop-portal-gtk>=1.10.0-2'
+)
+makedepends=(
+  git
+  glib2-devel
+  meson
+)
+optdepends=('evince: Print previews')
+provides=(xdg-desktop-portal-impl)
+conflicts=('xdg-desktop-portal-gtk<1.10.0-2')
+replaces=('xdg-desktop-portal-gtk<1.10.0-2')
+groups=(gnome)
+source=("git+https://gitlab.gnome.org/GNOME/xdg-desktop-portal-gnome.git#tag=${pkgver/[a-z]/.&}"
+"git+https://gitlab.gnome.org/GNOME/libgxdp.git#commit=1b8aa4fa79403b467f21fc51e5f61c83f6339fbb")
+b2sums=('8aad75f9961f6d10fdbd08f6cb72f2fc34a384ec218683d4f3cdc539c09b2302bfa45f28c000788f5fbd4f846922fa3f2e4badbf2c8ca1faa391e6a3dbcb3405'
+        '91fe2702d57fd6cbddcb33e187af1ee7292bc37b0a4de7aba0930ffa898ba07aaba6372e40c180efbec7233dba942f265f10ec8c0f3524af06ac3a7b05bf03e0')
+
+prepare() {
+  # Link subproject libgxdp
+  cd "$pkgname/subprojects"
+  ln -s ../../libgxdp libgxdp
+
+  # Hyprland modifications
+  cd ..
+  sed -i 's/static gboolean settings_only = TRUE/static gboolean settings_only = FALSE/' src/xdg-desktop-portal-gnome.c
+  sed -i 's/settings_only = TRUE/settings_only = FALSE/' src/xdg-desktop-portal-gnome.c
+}
+
+build() {
+  arch-meson $pkgname build
+  meson compile -C build
+}
+
+check() {
+  meson test -C build --print-errorlogs
+}
+
+package() {
+  meson install -C build --destdir "$pkgdir"
+}
+# vim:set sw=2 sts=-1 et:
